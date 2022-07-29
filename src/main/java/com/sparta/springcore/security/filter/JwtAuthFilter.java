@@ -2,6 +2,7 @@ package com.sparta.springcore.security.filter;
 
 import com.sparta.springcore.security.jwt.HeaderTokenExtractor;
 import com.sparta.springcore.security.jwt.JwtPreProcessingToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,6 +20,7 @@ import java.io.IOException;
  * Token 을 내려주는 Filter 가 아닌  client 에서 받아지는 Token 을 서버 사이드에서 검증하는 클레스 SecurityContextHolder 보관소에 해당
  * Token 값의 인증 상태를 보관 하고 필요할때 마다 인증 확인 후 권한 상태 확인 하는 기능
  */
+@Slf4j
 public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
 
     private final HeaderTokenExtractor extractor;
@@ -67,8 +69,8 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         context.setAuthentication(authResult);
-        SecurityContextHolder.setContext(context);
-
+         SecurityContextHolder.setContext(context);
+        log.info("JwtAuthFilter.successfulAuthentication = {}", response.getStatus());
         // FilterChain chain 해당 필터가 실행 후 다른 필터도 실행할 수 있도록 연결실켜주는 메서드
         chain.doFilter(
                 request,
@@ -88,6 +90,8 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
          *	모든 인증받은 Context 값이 삭제 됩니다.
          */
         SecurityContextHolder.clearContext();
+        log.info("JwtAuthFilter.unsuccessfulAuthentication = {}", response.getStatus());
+
 
         super.unsuccessfulAuthentication(
                 request,
