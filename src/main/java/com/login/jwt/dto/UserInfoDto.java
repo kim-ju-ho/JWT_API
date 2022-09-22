@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UserInfoDto {
-    String username;
-    boolean isAdmin;
+
+    private final String username;
+    private final String email;
+
 }

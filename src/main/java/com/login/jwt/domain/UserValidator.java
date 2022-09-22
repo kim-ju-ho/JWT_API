@@ -1,22 +1,27 @@
 package com.login.jwt.domain;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.passay.*;
 
+@Getter
 @Slf4j
-public class PasswordValidator {
-    private final String password;
+public class UserValidator {
+
     private final char[] AllowedCharacterRule = {'!','@','#','$','%','^','&','*'};
 
-
-    public PasswordValidator(String password) {
-        validator(password);
-        this.password = password;
+    public static void userValidator(UserCommand userCommand){
+        usernameValidator(userCommand.getUsername());
+        passwordValidator(userCommand.getPassword());
+        emailValidator(userCommand.getEmail());
     }
 
-    private void validator(String password) {
-        System.out.println("들어오는 파라미터 값 ");
-        System.out.println(password);
+    public static void usernameValidator(String username){
+        if(username.length()<8||username.length()>13){
+            throw new IllegalArgumentException("");
+        }
+    }
+    public static void passwordValidator(String password) {
         org.passay.PasswordValidator passwordValidator = new org.passay.PasswordValidator(
                 new LengthRule(8,16),
                 // at least one upper-case character
@@ -33,9 +38,6 @@ public class PasswordValidator {
 
                 new WhitespaceRule()
 
-
-
-
         );
         PasswordData passwordData = new PasswordData(password);
         RuleResult ruleResult = passwordValidator.validate(passwordData);
@@ -48,11 +50,14 @@ public class PasswordValidator {
             for (String msg : passwordValidator.getMessages(ruleResult)) {
                 log.info("[error msg] {}",msg);
             }
-
-
             throw new IllegalArgumentException("유효하지 않은 비밀번호입니다.");
-
         }
     }
+
+    public static void emailValidator(String email){
+
+    }
+
+
 
 }
