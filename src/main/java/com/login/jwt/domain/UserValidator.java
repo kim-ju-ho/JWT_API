@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.passay.*;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Getter
 @Slf4j
 public class UserValidator {
@@ -55,7 +58,12 @@ public class UserValidator {
     }
 
     public static void emailValidator(String email){
-
+        String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(email);
+        if(!m.matches()) {
+            throw new IllegalArgumentException("유효한 이메일 형식이 아닙니다.");
+        }
     }
 
 
